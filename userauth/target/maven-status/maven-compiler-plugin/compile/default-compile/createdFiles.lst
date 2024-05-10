@@ -1,0 +1,8 @@
+com\ecommerce\UserAuth.class
+com\ecommerce\Controller\UserController.class
+com\ecommerce\Aspect\UserAuthAspect.class
+com\ecommerce\DTO\LoginDTO.class
+com\ecommerce\Model\User.class
+com\ecommerce\Service\Impl\UserServiceImpl.class
+com\ecommerce\Repo\UserRepo.class
+com\ecommerce\Service\UserService.class

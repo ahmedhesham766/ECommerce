@@ -1,0 +1,132 @@
+version: '3.8'
+
+services:
+  ecommercedb:
+    image: mysql:8.0.28
+    environment:
+      MYSQL_DATABASE: 'UserAuth'
+      MYSQL_USER: 'userauth'
+      MYSQL_PASSWORD: 'Moderesta2001'
+      MYSQL_ROOT_PASSWORD: 'Moderesta2001'
+    ports:
+      - "3307:3306"
+    volumes:
+      - ecommercedb-data:/var/lib/mysql
+    networks:
+      - backend
+
+  userauth-service:
+    build:
+      context: ./userauth
+      dockerfile: Dockerfile
+    ports:
+      - "5000:8081"
+    volumes:
+      - ./userauth/src:/app/src
+      - ./userauth/target:/app/target
+    depends_on:
+      - ecommercedb
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://ecommercedb:3306/UserAuth?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: userauth
+      SPRING_DATASOURCE_PASSWORD: Moderesta2001
+      SPRING_DATASOURCE_DRIVERCLASSNAME: com.mysql.cj.jdbc.Driver
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: true
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.MySQL8Dialect
+      SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL: true
+      SPRING_LIQUIBASE_CHANGE_LOG: classpath:db/changelog/changelog-master.xml
+      ALLOWED_ORIGIN: http://localhost:4200
+      LOGGING_LEVEL_ROOT: INFO
+      LOGGING_FILE_NAME: logs/myapp.log
+    networks:
+      - backend
+
+
+  product-service:
+    build:
+      context: ./product
+      dockerfile: Dockerfile
+    ports:
+      - "5001:8082"
+    volumes:
+      - ./product/src:/app/src
+      - ./product/target:/app/target
+    depends_on:
+      - ecommercedb
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://ecommercedb:3306/Product?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: userauth
+      SPRING_DATASOURCE_PASSWORD: Moderesta2001
+      SPRING_DATASOURCE_DRIVERCLASSNAME: com.mysql.cj.jdbc.Driver
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: true
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.MySQL8Dialect
+      SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL: true
+      SPRING_LIQUIBASE_CHANGE_LOG: classpath:db/changelog/changelog-master.xml
+      ALLOWED_ORIGIN: http://localhost:4200
+      LOGGING_LEVEL_ROOT: INFO
+      LOGGING_FILE_NAME: logs/myapp.log
+    networks:
+      - backend
+
+  cart-service:
+    build:
+      context: ./cart
+      dockerfile: Dockerfile
+    ports:
+      - "5002:8083"
+    volumes:
+      - ./cart/src:/app/src
+      - ./cart/target:/app/target
+    depends_on:
+      - ecommercedb
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://ecommercedb:3306/Cart?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: userauth
+      SPRING_DATASOURCE_PASSWORD: Moderesta2001
+      SPRING_DATASOURCE_DRIVERCLASSNAME: com.mysql.cj.jdbc.Driver
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: true
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.MySQL8Dialect
+      SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL: true
+      SPRING_LIQUIBASE_CHANGE_LOG: classpath:db/changelog/changelog-master.xml
+      ALLOWED_ORIGIN: http://localhost:4200
+      LOGGING_LEVEL_ROOT: INFO
+      LOGGING_FILE_NAME: logs/myapp.log
+    networks:
+      - backend
+
+  order-service:
+    build:
+      context: ./order
+      dockerfile: Dockerfile
+    ports:
+      - "5003:8084"
+    volumes:
+      - ./order/src:/app/src
+      - ./order/target:/app/target
+    depends_on:
+      - ecommercedb
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://ecommercedb:3306/Orderdb?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: userauth
+      SPRING_DATASOURCE_PASSWORD: Moderesta2001
+      SPRING_DATASOURCE_DRIVERCLASSNAME: com.mysql.cj.jdbc.Driver
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: true
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.MySQL8Dialect
+      SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL: true
+      SPRING_LIQUIBASE_CHANGE_LOG: classpath:db/changelog/changelog-master.xml
+      ALLOWED_ORIGIN: http://localhost:4200
+      LOGGING_LEVEL_ROOT: INFO
+      LOGGING_FILE_NAME: logs/myapp.log
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
+
+volumes:
+  ecommercedb-data:
