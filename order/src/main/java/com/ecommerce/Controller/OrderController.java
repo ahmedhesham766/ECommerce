@@ -62,4 +62,12 @@ public class OrderController {
         response.put("message" ,"status updated to " + status);
        return   ResponseEntity.ok().body(response);
     }
+
+    @GetMapping("/showOrders")
+    private ResponseEntity<List<Orders>> getAllOrders()
+    {
+        List<Orders> orders = orderService.getAllOrders();
+
+        return ResponseEntity.ok().body(orders);
+    }
 }

@@ -5,6 +5,8 @@ import com.ecommerce.REPO.OrderRepo;
 import com.ecommerce.Service.OrderService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class OrderServiceImpl implements OrderService {
 
@@ -17,6 +19,11 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Orders findOrderByID(Long orderID) {
         return orderRepo.findByorderId(orderID);
+    }
+
+    @Override
+    public List<Orders> getAllOrders() {
+        return orderRepo.findAll();
     }
 
     @Override

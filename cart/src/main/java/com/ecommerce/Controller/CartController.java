@@ -103,7 +103,7 @@ public class CartController {
         Double totalCostResponse = cart.getTotalCost();
         cart.setTotalCost(0.0);
         cartService.updateCart(cart);
-        return  ResponseEntity.ok().body(cart.getTotalCost());
+        return  ResponseEntity.ok().body(totalCostResponse);
     }
 }
 
