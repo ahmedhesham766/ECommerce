@@ -26,4 +26,6 @@ public class Product {
     @Column(name = "image_url" , length = Integer.MAX_VALUE)
     private String imageUrl;
 
+    private String categoryName;
+
 }

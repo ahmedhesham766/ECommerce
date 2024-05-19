@@ -30,8 +30,36 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product updateProduct(Product product) {
-        return productRepo.save(product);
+    public Product updateProduct(Long id, Product productDetails) {
+        Product existingProduct = findProductById(id);
+        if (existingProduct != null) {
+            if (productDetails.getProductName() != null) {
+                existingProduct.setProductName(productDetails.getProductName());
+            }
+            if (productDetails.getPrice() != null) {
+                existingProduct.setPrice(productDetails.getPrice());
+            }
+            if (productDetails.getCategoryName() != null) {
+                existingProduct.setCategoryName(productDetails.getCategoryName());
+            }
+            // Add checks for other fields as necessary
+            if (productDetails.getStock() != null) {
+                existingProduct.setStock(productDetails.getStock());
+            }
+            if (productDetails.getImageUrl() != null)
+            {
+                existingProduct.setImageUrl(productDetails.getImageUrl());
+            }
+
+            return productRepo.save(existingProduct);
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public void updateProduct(Product product) {
+        productRepo.save(product);
     }
 
     @Override
@@ -42,5 +70,10 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<Product> findAllProducts() {
         return productRepo.findAll();
+    }
+
+    @Override
+    public List<Product> getProductsByCategoryName(String categoryName) {
+        return productRepo.findByCategoryName(categoryName);
     }
 }

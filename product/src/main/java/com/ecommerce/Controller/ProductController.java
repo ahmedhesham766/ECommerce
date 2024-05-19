@@ -51,11 +51,14 @@ public class ProductController {
     }
 
     //admin only can update product
-    @PutMapping("/update")
-    public ResponseEntity<Product> updateCustomer(@RequestBody Product product)
-    {
-        Product updatedProduct = productService.updateProduct(product);
-        return new ResponseEntity<>(updatedProduct,HttpStatus.OK);
+    @PutMapping("/update/{id}")
+    public ResponseEntity<Product> updateProduct(@PathVariable("id") Long id, @RequestBody Product productDetails) {
+        Product updatedProduct = productService.updateProduct(id, productDetails);
+        if (updatedProduct != null) {
+            return new ResponseEntity<>(updatedProduct, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     //admin only can delete product
@@ -86,6 +89,12 @@ public class ProductController {
         product.setStock(newStock);
         productService.updateProduct(product);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/category/{categoryName}")
+    public ResponseEntity<List<Product>> getProductsByCategoryName(@PathVariable String categoryName) {
+        List<Product> products = productService.getProductsByCategoryName(categoryName);
+        return new ResponseEntity<>(products,HttpStatus.OK);
     }
 
 }
