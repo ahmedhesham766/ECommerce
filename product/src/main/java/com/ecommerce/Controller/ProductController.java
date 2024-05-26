@@ -1,5 +1,6 @@
 package com.ecommerce.Controller;
 
+import com.ecommerce.DTO.ProductDTO;
 import com.ecommerce.Model.Product;
 import com.ecommerce.Service.ProductService;
 import org.springframework.http.HttpStatus;
@@ -41,18 +42,18 @@ public class ProductController {
 
     //admin just can add products
     @PostMapping("/add")
-    public ResponseEntity<Map<String,Object>> addProduct(@RequestBody Product product)
+    public ResponseEntity<Map<String,Object>> addProduct(@RequestBody ProductDTO product)
     {
         Product productSaved = productService.addProduct(product);
         Map<String,Object> response = new HashMap<>();
-        response.put("addProduct-message","Product " + product.getProductName() + " added in the system successfully and its id is " + product.getProductId());
+        response.put("addProduct-message","Product " + productSaved.getProductName() + " added in the system successfully and its id is " + productSaved.getProductId());
         response.put("new-product",productSaved);
         return  ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     //admin only can update product
     @PutMapping("/update/{id}")
-    public ResponseEntity<Product> updateProduct(@PathVariable("id") Long id, @RequestBody Product productDetails) {
+    public ResponseEntity<Product> updateProduct(@PathVariable("id") Long id, @RequestBody ProductDTO productDetails) {
         Product updatedProduct = productService.updateProduct(id, productDetails);
         if (updatedProduct != null) {
             return new ResponseEntity<>(updatedProduct, HttpStatus.OK);

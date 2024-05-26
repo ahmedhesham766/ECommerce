@@ -5,6 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "product")
 @Data
@@ -23,8 +26,8 @@ public class Product {
 
     private Double price;
 
-    @Column(name = "image_url" , length = Integer.MAX_VALUE)
-    private String imageUrl;
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProductImages> images = new ArrayList<>();
 
     private String categoryName;
 
