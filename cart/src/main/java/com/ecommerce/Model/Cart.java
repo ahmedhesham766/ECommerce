@@ -25,6 +25,8 @@ public class Cart {
 
     private Long userID;
 
+    private Integer prodCount;
+
     private Double totalCost = 0.0;
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)

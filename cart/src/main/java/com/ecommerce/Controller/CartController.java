@@ -67,6 +67,15 @@ public class CartController {
         return  ResponseEntity.ok().body(response);
     }
 
+    @GetMapping("/getProdCount/{userID}")
+    public ResponseEntity<?> getProdCountByUserId(@PathVariable Long userID)
+    {
+        Map<String, Integer> response = new HashMap<>();
+        Integer prodCount = cartService.getProdCountByUserId(userID);
+        response.put("prodcount", prodCount);
+        return ResponseEntity.ok().body(response);
+    }
+
     @GetMapping("/getProducts/{userID}")
     public ResponseEntity<?> getProductsFromCart(@PathVariable Long userID)
     {

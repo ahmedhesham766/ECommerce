@@ -42,6 +42,11 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
+    public Integer getProdCountByUserId(Long userId) {
+       return cartRepo.findProdCountByUserID(userId);
+    }
+
+    @Override
     public Cart updateCart(Cart cart) {
         return cartRepo.save(cart);
     }
@@ -58,6 +63,7 @@ public class CartServiceImpl implements CartService {
                 .filter(item -> item.getProductId().equals(product.getProductId()))
                 .findFirst();
 
+
         if (existingProduct.isPresent()) {
             CartItem item = existingProduct.get();
             item.setQuantity(item.getQuantity() + 1);
@@ -67,8 +73,12 @@ public class CartServiceImpl implements CartService {
         }
 
         product.setStock(product.getStock()-1);
-        cart.setTotalCost(cart.getTotalCost()+product.getPrice());
+        cart.setTotalCost(cart.getTotalCost() + product.getPrice());
 
+        int totalQuantity = cart.getItems().stream()
+                .mapToInt(CartItem::getQuantity)
+                .sum();
+        cart.setProdCount(totalQuantity);
         cartRepo.save(cart); // This saves the Cart and all associated CartItems
 
         return convertCartToDTO(cart);
@@ -88,6 +98,7 @@ public class CartServiceImpl implements CartService {
         return CartDTO.builder()
                 .cartId(cart.getCartId())
                 .userId(cart.getUserID())
+                .prodCount(cart.getProdCount())
                 .totalCost(cart.getTotalCost())
                 .products(itemDTOs)
                 .build();
