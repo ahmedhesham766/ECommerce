@@ -25,16 +25,16 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public Cart findCartByUserId(Long userId) {
-        return cartRepo.findByuserID(userId);
+        return cartRepo.findByUserId(userId);
     }
 
     @Override
     public Cart getOrCreateCart(Long userId) {
-        Cart cart = cartRepo.findByuserID(userId);
+        Cart cart = cartRepo.findByUserId(userId);
 
         if (cart == null) {
             cart = new Cart();
-            cart.setUserID(userId);
+            cart.setUserId(userId);
             cart.setTotalCost(0.0);
             cart = cartRepo.save(cart);
         }
@@ -97,7 +97,7 @@ public class CartServiceImpl implements CartService {
 
         return CartDTO.builder()
                 .cartId(cart.getCartId())
-                .userId(cart.getUserID())
+                .userId(cart.getUserId())
                 .prodCount(cart.getProdCount())
                 .totalCost(cart.getTotalCost())
                 .products(itemDTOs)
