@@ -40,7 +40,7 @@ public class CartController {
     public ResponseEntity<?> addProductToCart(@RequestBody CartRequest cartRequest)
     {
         Map<String, Object> response = new HashMap<>();
-        UserDTO user =userServiceClient.getUserById(cartRequest.getUserID()).block();
+        UserDTO user =userServiceClient.getUserById(cartRequest.getUserId()).block();
         ProductDTO product = productServiceClient.getProductById(cartRequest.getProductID()).block();
 
         if (user == null || product == null) {

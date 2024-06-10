@@ -6,25 +6,25 @@ import lombok.NoArgsConstructor;
 
 
 public class CartRequest {
-    private Long userID;
+    private Long userId;
     private Long productID;
 
     // Constructor, getters, and setters should also use the camelCase convention
     public CartRequest(Long userID, Long productID) {
-        this.userID = userID;
+        this.userId = userID;
         this.productID = productID;
     }
 
     public void setUserID(Long userID) {
-        this.userID = userID;
+        this.userId = userID;
     }
 
     public void setProductID(Long productID) {
         this.productID = productID;
     }
 
-    public Long getUserID() {
-        return userID;
+    public Long getUserId() {
+        return userId;
     }
 
     public Long getProductID() {
