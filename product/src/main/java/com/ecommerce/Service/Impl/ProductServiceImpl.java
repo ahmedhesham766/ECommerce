@@ -2,6 +2,7 @@ package com.ecommerce.Service.Impl;
 
 import com.ecommerce.DTO.ProductDTO;
 import com.ecommerce.Model.Product;
+import com.ecommerce.Model.ProductColors;
 import com.ecommerce.Model.ProductImages;
 import com.ecommerce.REPO.ProductImagesRepo;
 import com.ecommerce.REPO.ProductRepo;
@@ -64,42 +65,99 @@ public class ProductServiceImpl implements ProductService {
         Product existingProduct = findProductById(id);
 
         if (existingProduct != null) {
-            if (productDetails.getProductName() != null) {
-                existingProduct.setProductName(productDetails.getProductName());
-            }
-            if (productDetails.getPrice() != null) {
-                existingProduct.setPrice(productDetails.getPrice());
-            }
-            if (productDetails.getCategoryName() != null) {
-                existingProduct.setCategoryName(productDetails.getCategoryName());
-            }
-            // Add checks for other fields as necessary
-            if (productDetails.getStock() != null) {
-                existingProduct.setStock(productDetails.getStock());
-            }
-            if (productDetails.getImageUrls() != null) {
-
-                existingProduct.getImages().clear();
-
-                List<ProductImages> productImagesList = productDetails.getImageUrls().stream()
-                        .map(imageUrl -> {
-                            ProductImages productImage = new ProductImages();
-                            productImage.setProduct(existingProduct);
-                            productImage.setImageUrl(imageUrl);
-                            return productImage;
-                        })
-                        .toList();
-
-                // Set images in the product
-                existingProduct.getImages().addAll(productImagesList);
-
-            }
+            updateProductName(existingProduct, productDetails.getProductName());
+            updateProductPrice(existingProduct, productDetails.getPrice());
+            updateProductCategoryName(existingProduct, productDetails.getCategoryName());
+            updateProductStock(existingProduct, productDetails.getStock());
+            updateProductImages(existingProduct, productDetails.getImageUrls());
+            updateProductColors(existingProduct, productDetails.getColors());
 
             return productRepo.save(existingProduct);
         } else {
             return null;
         }
     }
+
+    private void updateProductName(Product existingProduct, String productName) {
+        if (productName != null) {
+            existingProduct.setProductName(productName);
+        }
+    }
+
+    private void updateProductPrice(Product existingProduct, Double price) {
+        if (price != null) {
+            existingProduct.setPrice(price);
+        }
+    }
+
+    private void updateProductCategoryName(Product existingProduct, String categoryName) {
+        if (categoryName != null) {
+            existingProduct.setCategoryName(categoryName);
+        }
+    }
+
+    private void updateProductStock(Product existingProduct, Integer stock) {
+        if (stock != null) {
+            existingProduct.setStock(stock);
+        }
+    }
+
+    private void updateProductImages(Product existingProduct, List<String> imageUrls) {
+        if (imageUrls != null) {
+            if (imageUrls.size() > 4) {
+                existingProduct.getImages().clear();
+            }
+
+            List<ProductImages> productImagesList = imageUrls.stream()
+                    .map(imageUrl -> {
+                        ProductImages productImage = new ProductImages();
+                        productImage.setProduct(existingProduct);
+                        productImage.setImageUrl(imageUrl);
+                        return productImage;
+                    })
+                    .collect(Collectors.toList());
+            if (existingProduct.getImages().size() + productImagesList.size() > 4) {
+                existingProduct.getImages().clear();
+            }
+            for (ProductImages newImages : productImagesList) {
+                boolean imageExists = existingProduct.getImages().stream()
+                        .anyMatch(existingImage -> existingImage.getImageUrl().equals(newImages.getImageUrl()));
+                if (!imageExists) {
+                    existingProduct.getImages().add(newImages);
+                }
+            }
+        }
+    }
+
+    private void updateProductColors(Product existingProduct, List<String> newColors) {
+        if (newColors != null) {
+            if (newColors.size() > 4) {
+                existingProduct.getColors().clear();
+            }
+
+            List<ProductColors> productColorsList = newColors.stream()
+                    .map(color -> {
+                        ProductColors productColor = new ProductColors();
+                        productColor.setProduct(existingProduct);
+                        productColor.setColorName(color);
+                        return productColor;
+                    })
+                    .collect(Collectors.toList());
+
+            if (existingProduct.getColors().size() + productColorsList.size() > 4) {
+                existingProduct.getColors().clear();
+            }
+
+            for (ProductColors newColor : productColorsList) {
+                boolean colorExists = existingProduct.getColors().stream()
+                        .anyMatch(existingColor -> existingColor.getColorName().equals(newColor.getColorName()));
+                if (!colorExists) {
+                    existingProduct.getColors().add(newColor);
+                }
+            }
+        }
+    }
+
 
     @Override
     public void updateProduct(Product product) {

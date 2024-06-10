@@ -16,5 +16,6 @@ public class ProductDTO {
     private Integer stock;
     private Double price;
     private List<String> imageUrls;
+    private List<String> colors;
     private String categoryName;
 }
