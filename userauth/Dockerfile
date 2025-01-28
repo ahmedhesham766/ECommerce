@@ -1,5 +1,5 @@
 # Start with a base image containing Java runtime
-FROM eclipse-temurin:22-jdk
+FROM eclipse-temurin:23
 
 # The application's jar file
 ARG JAR_FILE=target/*.jar
