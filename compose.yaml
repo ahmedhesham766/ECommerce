@@ -1,6 +1,15 @@
 version: '3.8'
 
 services:
+  configserver:
+    build:
+      context: ./configServer
+      dockerfile: Dockerfile
+    ports:
+      - "8888:8888"
+    networks:
+      - backend
+
   ecommercedb:
     image: mysql:8.0.28
     environment:
@@ -21,24 +30,11 @@ services:
       dockerfile: Dockerfile
     ports:
       - "5000:8081"
-    volumes:
-      - ./userauth/src:/app/src
-      - ./userauth/target:/app/target
     depends_on:
       - ecommercedb
+      - configserver
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://ecommercedb:3306/UserAuth?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
-      SPRING_DATASOURCE_USERNAME: userauth
-      SPRING_DATASOURCE_PASSWORD: Moderesta2001
-      SPRING_DATASOURCE_DRIVERCLASSNAME: com.mysql.cj.jdbc.Driver
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update
-      SPRING_JPA_SHOW_SQL: true
-      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.MySQL8Dialect
-      SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL: true
-      SPRING_LIQUIBASE_CHANGE_LOG: classpath:db/changelog/changelog-master.xml
-      ALLOWED_ORIGIN: http://localhost:4200
-      LOGGING_LEVEL_ROOT: INFO
-      LOGGING_FILE_NAME: logs/myapp.log
+      SPRING_CLOUD_CONFIG_URI: http://configserver:8888
     networks:
       - backend
 
@@ -54,23 +50,14 @@ services:
       - ./product/target:/app/target
     depends_on:
       - ecommercedb
+      - configserver
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://ecommercedb:3306/Product?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
-      SPRING_DATASOURCE_USERNAME: userauth
-      SPRING_DATASOURCE_PASSWORD: Moderesta2001
-      SPRING_DATASOURCE_DRIVERCLASSNAME: com.mysql.cj.jdbc.Driver
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update
-      SPRING_JPA_SHOW_SQL: true
-      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.MySQL8Dialect
-      SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL: true
-      SPRING_LIQUIBASE_CHANGE_LOG: classpath:db/changelog/changelog-master.xml
-      ALLOWED_ORIGIN: http://localhost:4200
-      LOGGING_LEVEL_ROOT: INFO
-      LOGGING_FILE_NAME: logs/myapp.log
+      SPRING_CLOUD_CONFIG_URI: http://configserver:8888
     networks:
       - backend
 
   cart-service:
+    image: ecommerce-cart-service:latest
     build:
       context: ./cart
       dockerfile: Dockerfile
@@ -81,19 +68,9 @@ services:
       - ./cart/target:/app/target
     depends_on:
       - ecommercedb
+      - configserver
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://ecommercedb:3306/Cart?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
-      SPRING_DATASOURCE_USERNAME: userauth
-      SPRING_DATASOURCE_PASSWORD: Moderesta2001
-      SPRING_DATASOURCE_DRIVERCLASSNAME: com.mysql.cj.jdbc.Driver
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update
-      SPRING_JPA_SHOW_SQL: true
-      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.MySQL8Dialect
-      SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL: true
-      SPRING_LIQUIBASE_CHANGE_LOG: classpath:db/changelog/changelog-master.xml
-      ALLOWED_ORIGIN: http://localhost:4200
-      LOGGING_LEVEL_ROOT: INFO
-      LOGGING_FILE_NAME: logs/myapp.log
+      SPRING_CLOUD_CONFIG_URI: http://configserver:8888
     networks:
       - backend
 
@@ -109,18 +86,7 @@ services:
     depends_on:
       - ecommercedb
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://ecommercedb:3306/Orderdb?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
-      SPRING_DATASOURCE_USERNAME: userauth
-      SPRING_DATASOURCE_PASSWORD: Moderesta2001
-      SPRING_DATASOURCE_DRIVERCLASSNAME: com.mysql.cj.jdbc.Driver
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update
-      SPRING_JPA_SHOW_SQL: true
-      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.MySQL8Dialect
-      SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL: true
-      SPRING_LIQUIBASE_CHANGE_LOG: classpath:db/changelog/changelog-master.xml
-      ALLOWED_ORIGIN: http://localhost:4200
-      LOGGING_LEVEL_ROOT: INFO
-      LOGGING_FILE_NAME: logs/myapp.log
+     SPRING_CLOUD_CONFIG_URI: http://configserver:8888
     networks:
       - backend
 

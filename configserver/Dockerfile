@@ -5,7 +5,9 @@ FROM eclipse-temurin:23
 ARG JAR_FILE=target/*.jar
 
 # Add the application's jar to the container
-COPY ./target/Cart-0.0.1-SNAPSHOT.jar app.jar
+COPY ./target/configserver-0.0.1-SNAPSHOT.jar app.jar
 
 # Run the jar file
 ENTRYPOINT ["java","-jar","/app.jar"]
+
+EXPOSE 8888
