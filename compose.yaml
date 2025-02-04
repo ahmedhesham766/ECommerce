@@ -1,12 +1,25 @@
 version: '3.8'
 
 services:
+  eureka-server:
+    image: eureka-server
+    container_name: eureka-server
+    build:
+      context: ./eureka-server
+      dockerfile: Dockerfile
+    ports:
+      - "8761:8761"
+    networks:
+      - backend
+
   configserver:
     build:
       context: ./configServer
       dockerfile: Dockerfile
     ports:
       - "8888:8888"
+    env_file:
+      - .env
     networks:
       - backend
 
@@ -51,6 +64,7 @@ services:
     depends_on:
       - ecommercedb
       - configserver
+      - eureka-server
     environment:
       SPRING_CLOUD_CONFIG_URI: http://configserver:8888
     networks:
