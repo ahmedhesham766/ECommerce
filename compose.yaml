@@ -18,8 +18,9 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8888:8888"
-    env_file:
-      - .env
+    secrets:
+      - GITHUB_USERNAME
+      - GITHUB_TOKEN
     networks:
       - backend
 
@@ -103,6 +104,12 @@ services:
      SPRING_CLOUD_CONFIG_URI: http://configserver:8888
     networks:
       - backend
+
+secrets:
+  GITHUB_USERNAME:
+    external: true  # means it's already created via 'docker secret create'
+  GITHUB_TOKEN:
+    external: true
 
 networks:
   backend:
